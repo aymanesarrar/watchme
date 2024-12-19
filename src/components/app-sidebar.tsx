@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { ISearch } from "@/types/types";
 import { motion } from "motion/react";
 import { Link } from "@tanstack/react-router";
+import { useQueryState } from "nuqs";
 async function fetchMovieList(key: string): Promise<ISearch> {
   const response = await fetch(
     `https://v3.sg.media-imdb.com/suggestion/x/${key}.json`
@@ -18,26 +19,26 @@ async function fetchMovieList(key: string): Promise<ISearch> {
 }
 
 export function AppSidebar() {
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useQueryState("q", { defaultValue: "" });
   const { data, isLoading } = useQuery({
     queryKey: ["movieList", search],
     queryFn: () => fetchMovieList(search),
     enabled: search.length > 0,
   });
 
-  const handleDebounceValue = (e: ChangeEvent<HTMLInputElement>) => {
+  const handleInputSearch = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
-
+  console.log("re render");
   return (
     <Sidebar>
       <SidebarHeader>
-        <Input onChange={handleDebounceValue} value={search} />
+        <Input onChange={handleInputSearch} value={search} />
       </SidebarHeader>
       <SidebarContent>
         <div className="flex flex-col gap-2 p-2">
           {data?.d?.map((item) => (
-            <Link key={item.id} href={`/watch/movie/${item.id}`}>
+            <Link key={item.id} href={`/watch/movie/${item.id}?q=${search}`}>
               <motion.img
                 initial={{ scale: 0.5 }}
                 whileInView={{ scale: 1 }}

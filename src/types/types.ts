@@ -7,5 +7,6 @@ export interface ISearch {
     l: string;
     id: string;
     i: { height: number; imageUrl: string; width: number };
+    qid?: "movie" | "tvSeries";
   }>;
 }

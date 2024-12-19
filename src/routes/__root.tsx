@@ -7,7 +7,7 @@ export const Route = createRootRoute({
     <>
       <SidebarProvider>
         <AppSidebar />
-        <main className="flex flex-col border-solid border-2 border-black w-full">
+        <main className="flex flex-col w-full">
           <SidebarTrigger />
           <Outlet />
         </main>
