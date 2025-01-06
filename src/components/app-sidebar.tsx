@@ -38,7 +38,14 @@ export function AppSidebar() {
       <SidebarContent>
         <div className="flex flex-col gap-2 p-2">
           {data?.d?.map((item) => (
-            <Link key={item.id} href={`/watch/movie/${item.id}?q=${search}`}>
+            <Link
+              key={item.id}
+              href={
+                item.qid === "movie"
+                  ? `/watch/movie/${item.id}?q=${search}`
+                  : `/watch/serie/${item.id}?q=${search}`
+              }
+            >
               <motion.img
                 initial={{ scale: 0.5 }}
                 whileInView={{ scale: 1 }}
