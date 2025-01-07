@@ -18,8 +18,9 @@ import { Route as rootRoute } from './routes/__root'
 
 const IndexLazyImport = createFileRoute('/')()
 const WatchMovieMovieIdLazyImport = createFileRoute('/watch/movie/$movieId')()
-const WatchSerieSerieIdIndexLazyImport = createFileRoute(
-  '/watch/serie/$serieId/',
+const watchMovieMovieIdLazyImport = createFileRoute('/(watch)/movie/$movieId')()
+const WatchSerieSerieIdSeasonIndexLazyImport = createFileRoute(
+  '/watch/serie/$serieId/$season/',
 )()
 const WatchSerieSerieIdSeasonEpisodeLazyImport = createFileRoute(
   '/watch/serie/$serieId/$season/$episode',
@@ -41,15 +42,26 @@ const WatchMovieMovieIdLazyRoute = WatchMovieMovieIdLazyImport.update({
   import('./routes/watch/movie/$movieId.lazy').then((d) => d.Route),
 )
 
-const WatchSerieSerieIdIndexLazyRoute = WatchSerieSerieIdIndexLazyImport.update(
-  {
-    id: '/watch/serie/$serieId/',
-    path: '/watch/serie/$serieId/',
+const watchMovieMovieIdLazyRoute = watchMovieMovieIdLazyImport
+  .update({
+    id: '/(watch)/movie/$movieId',
+    path: '/movie/$movieId',
     getParentRoute: () => rootRoute,
-  } as any,
-).lazy(() =>
-  import('./routes/watch/serie/$serieId.index.lazy').then((d) => d.Route),
-)
+  } as any)
+  .lazy(() =>
+    import('./routes/(watch)/movie/$movieId.lazy').then((d) => d.Route),
+  )
+
+const WatchSerieSerieIdSeasonIndexLazyRoute =
+  WatchSerieSerieIdSeasonIndexLazyImport.update({
+    id: '/watch/serie/$serieId/$season/',
+    path: '/watch/serie/$serieId/$season/',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/watch/serie/$serieId.$season.index.lazy').then(
+      (d) => d.Route,
+    ),
+  )
 
 const WatchSerieSerieIdSeasonEpisodeLazyRoute =
   WatchSerieSerieIdSeasonEpisodeLazyImport.update({
@@ -73,18 +85,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexLazyImport
       parentRoute: typeof rootRoute
     }
+    '/(watch)/movie/$movieId': {
+      id: '/(watch)/movie/$movieId'
+      path: '/movie/$movieId'
+      fullPath: '/movie/$movieId'
+      preLoaderRoute: typeof watchMovieMovieIdLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/watch/movie/$movieId': {
       id: '/watch/movie/$movieId'
       path: '/watch/movie/$movieId'
       fullPath: '/watch/movie/$movieId'
       preLoaderRoute: typeof WatchMovieMovieIdLazyImport
-      parentRoute: typeof rootRoute
-    }
-    '/watch/serie/$serieId/': {
-      id: '/watch/serie/$serieId/'
-      path: '/watch/serie/$serieId'
-      fullPath: '/watch/serie/$serieId'
-      preLoaderRoute: typeof WatchSerieSerieIdIndexLazyImport
       parentRoute: typeof rootRoute
     }
     '/watch/serie/$serieId/$season/$episode': {
@@ -94,6 +106,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof WatchSerieSerieIdSeasonEpisodeLazyImport
       parentRoute: typeof rootRoute
     }
+    '/watch/serie/$serieId/$season/': {
+      id: '/watch/serie/$serieId/$season/'
+      path: '/watch/serie/$serieId/$season'
+      fullPath: '/watch/serie/$serieId/$season'
+      preLoaderRoute: typeof WatchSerieSerieIdSeasonIndexLazyImport
+      parentRoute: typeof rootRoute
+    }
   }
 }
 
@@ -101,61 +120,69 @@ declare module '@tanstack/react-router' {
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexLazyRoute
+  '/movie/$movieId': typeof watchMovieMovieIdLazyRoute
   '/watch/movie/$movieId': typeof WatchMovieMovieIdLazyRoute
-  '/watch/serie/$serieId': typeof WatchSerieSerieIdIndexLazyRoute
   '/watch/serie/$serieId/$season/$episode': typeof WatchSerieSerieIdSeasonEpisodeLazyRoute
+  '/watch/serie/$serieId/$season': typeof WatchSerieSerieIdSeasonIndexLazyRoute
 }
 
 export interface FileRoutesByTo {
   '/': typeof IndexLazyRoute
+  '/movie/$movieId': typeof watchMovieMovieIdLazyRoute
   '/watch/movie/$movieId': typeof WatchMovieMovieIdLazyRoute
-  '/watch/serie/$serieId': typeof WatchSerieSerieIdIndexLazyRoute
   '/watch/serie/$serieId/$season/$episode': typeof WatchSerieSerieIdSeasonEpisodeLazyRoute
+  '/watch/serie/$serieId/$season': typeof WatchSerieSerieIdSeasonIndexLazyRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/': typeof IndexLazyRoute
+  '/(watch)/movie/$movieId': typeof watchMovieMovieIdLazyRoute
   '/watch/movie/$movieId': typeof WatchMovieMovieIdLazyRoute
-  '/watch/serie/$serieId/': typeof WatchSerieSerieIdIndexLazyRoute
   '/watch/serie/$serieId/$season/$episode': typeof WatchSerieSerieIdSeasonEpisodeLazyRoute
+  '/watch/serie/$serieId/$season/': typeof WatchSerieSerieIdSeasonIndexLazyRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/movie/$movieId'
     | '/watch/movie/$movieId'
-    | '/watch/serie/$serieId'
     | '/watch/serie/$serieId/$season/$episode'
+    | '/watch/serie/$serieId/$season'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/movie/$movieId'
     | '/watch/movie/$movieId'
-    | '/watch/serie/$serieId'
     | '/watch/serie/$serieId/$season/$episode'
+    | '/watch/serie/$serieId/$season'
   id:
     | '__root__'
     | '/'
+    | '/(watch)/movie/$movieId'
     | '/watch/movie/$movieId'
-    | '/watch/serie/$serieId/'
     | '/watch/serie/$serieId/$season/$episode'
+    | '/watch/serie/$serieId/$season/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
   IndexLazyRoute: typeof IndexLazyRoute
+  watchMovieMovieIdLazyRoute: typeof watchMovieMovieIdLazyRoute
   WatchMovieMovieIdLazyRoute: typeof WatchMovieMovieIdLazyRoute
-  WatchSerieSerieIdIndexLazyRoute: typeof WatchSerieSerieIdIndexLazyRoute
   WatchSerieSerieIdSeasonEpisodeLazyRoute: typeof WatchSerieSerieIdSeasonEpisodeLazyRoute
+  WatchSerieSerieIdSeasonIndexLazyRoute: typeof WatchSerieSerieIdSeasonIndexLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexLazyRoute: IndexLazyRoute,
+  watchMovieMovieIdLazyRoute: watchMovieMovieIdLazyRoute,
   WatchMovieMovieIdLazyRoute: WatchMovieMovieIdLazyRoute,
-  WatchSerieSerieIdIndexLazyRoute: WatchSerieSerieIdIndexLazyRoute,
   WatchSerieSerieIdSeasonEpisodeLazyRoute:
     WatchSerieSerieIdSeasonEpisodeLazyRoute,
+  WatchSerieSerieIdSeasonIndexLazyRoute: WatchSerieSerieIdSeasonIndexLazyRoute,
 }
 
 export const routeTree = rootRoute
@@ -169,22 +196,26 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/",
+        "/(watch)/movie/$movieId",
         "/watch/movie/$movieId",
-        "/watch/serie/$serieId/",
-        "/watch/serie/$serieId/$season/$episode"
+        "/watch/serie/$serieId/$season/$episode",
+        "/watch/serie/$serieId/$season/"
       ]
     },
     "/": {
       "filePath": "index.lazy.tsx"
     },
+    "/(watch)/movie/$movieId": {
+      "filePath": "(watch)/movie/$movieId.lazy.tsx"
+    },
     "/watch/movie/$movieId": {
       "filePath": "watch/movie/$movieId.lazy.tsx"
     },
-    "/watch/serie/$serieId/": {
-      "filePath": "watch/serie/$serieId.index.lazy.tsx"
-    },
     "/watch/serie/$serieId/$season/$episode": {
       "filePath": "watch/serie/$serieId.$season.$episode.lazy.tsx"
+    },
+    "/watch/serie/$serieId/$season/": {
+      "filePath": "watch/serie/$serieId.$season.index.lazy.tsx"
     }
   }
 }
