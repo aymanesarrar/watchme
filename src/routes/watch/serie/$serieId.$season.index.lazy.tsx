@@ -1,4 +1,5 @@
 import EpisodeCard from "@/components/episode-card";
+import { Pagination } from "@/components/pagination";
 import { useQuery } from "@tanstack/react-query";
 import { createLazyFileRoute, Link } from "@tanstack/react-router";
 
@@ -29,13 +30,18 @@ const fetchEpisodeList = async (
 function RouteComponent() {
   const { serieId, season } = Route.useParams();
   const { data, isLoading } = useQuery({
-    queryKey: [serieId],
+    queryKey: [serieId, season],
     queryFn: () => fetchEpisodeList(serieId, season),
   });
   if (isLoading) return <div>Loading...</div>;
   console.log(data);
   return (
     <div>
+      <Pagination
+        seasonsCount={data?.seasons as number}
+        currentSeason={season}
+        serieId={serieId}
+      />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {data?.episodes?.map((episode, index) => (
           <Link

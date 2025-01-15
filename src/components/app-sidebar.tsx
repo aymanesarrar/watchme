@@ -43,7 +43,7 @@ export function AppSidebar() {
               href={
                 item.qid === "movie"
                   ? `/watch/movie/${item.id}?q=${search}`
-                  : `/watch/serie/${item.id}?q=${search}`
+                  : `/watch/serie/${item.id}/1?q=${search}`
               }
             >
               <motion.img
