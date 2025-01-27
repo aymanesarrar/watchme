@@ -1,4 +1,4 @@
-import { createLazyFileRoute, useParams } from "@tanstack/react-router";
+import { createLazyFileRoute } from "@tanstack/react-router";
 import { motion } from "motion/react";
 
 export const Route = createLazyFileRoute("/(watch)/movie/$movieId")({

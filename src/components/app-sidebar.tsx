@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent } from "react";
 import { Input } from "./ui/input";
 import {
   Sidebar,
@@ -20,7 +20,7 @@ async function fetchMovieList(key: string): Promise<ISearch> {
 
 export function AppSidebar() {
   const [search, setSearch] = useQueryState("q", { defaultValue: "" });
-  const { data, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ["movieList", search],
     queryFn: () => fetchMovieList(search),
     enabled: search.length > 0,
