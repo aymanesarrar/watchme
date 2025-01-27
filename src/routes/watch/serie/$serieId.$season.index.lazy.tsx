@@ -23,7 +23,7 @@ const fetchEpisodeList = async (
   }>;
 }> => {
   const response = await fetch(
-    `http://localhost:3000/serie/${serieId}/${season}`
+    `https://watchme-backend-production.up.railway.app/serie/${serieId}/${season}`
   );
   return await response.json();
 };
