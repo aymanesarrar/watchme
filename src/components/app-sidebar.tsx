@@ -13,7 +13,7 @@ import { Link } from "@tanstack/react-router";
 import { useQueryState } from "nuqs";
 async function fetchMovieList(key: string): Promise<ISearch> {
   const response = await fetch(
-    `https://v3.sg.media-imdb.com/suggestion/x/${key}.json`
+    `https://watchme-backend-production.up.railway.app/search/${key}`
   ).then((data) => data.json());
   return response;
 }
