@@ -24,12 +24,15 @@ export const Pagination = ({
       </Link>
 
       {seasons.map((season) => (
-        <PaginationItem
+        <Link
+          to={`/watch/serie/$serieId/${season}`}
           key={`${serieId}-${season}`}
-          isActive={season.toString() === currentSeason}
+          params={{ serieId }}
         >
-          {season}
-        </PaginationItem>
+          <PaginationItem isActive={season.toString() === currentSeason}>
+            {season}
+          </PaginationItem>
+        </Link>
       ))}
       <Link
         to="/watch/serie/$serieId/$season"
