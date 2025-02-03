@@ -1,3 +1,4 @@
+import { CreateReport } from "@/components/create-report";
 import EpisodeCard from "@/components/episode-card";
 import { Pagination } from "@/components/pagination";
 import { useQuery } from "@tanstack/react-query";
@@ -44,6 +45,7 @@ function RouteComponent() {
 
   return (
     <div>
+      <CreateReport />
       <Pagination
         seasonsCount={data?.seasons as number}
         currentSeason={season}
@@ -64,7 +66,10 @@ function RouteComponent() {
               key={episode.title}
               transition={{ duration: 0.3 }}
             >
-              <Link href={`/watch/serie/${serieId}/${season}/${index + 1}`}>
+              <Link
+                to={`/watch/serie/$serieId/$season/$episode`}
+                params={{ serieId, season, episode: (index + 1).toString() }}
+              >
                 <EpisodeCard
                   title={episode.title}
                   description={episode.description}

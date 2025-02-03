@@ -39,11 +39,15 @@ export function AppSidebar() {
           {data?.d?.map((item) => (
             <Link
               key={item.id}
-              href={
+              to={
                 item.qid === "movie"
-                  ? `/watch/movie/${item.id}?q=${search}`
-                  : `/watch/serie/${item.id}/1?q=${search}`
+                  ? `/watch/movie/$movieId`
+                  : `/watch/serie/$serieId/$season`
               }
+              params={{ movieId: item.id, serieId: item.id, season: "1" }}
+              search={{
+                q: search,
+              }}
             >
               <motion.img
                 initial={{ scale: 0.5 }}
