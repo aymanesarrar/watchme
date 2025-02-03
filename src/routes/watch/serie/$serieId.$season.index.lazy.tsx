@@ -2,6 +2,7 @@ import EpisodeCard from "@/components/episode-card";
 import { Pagination } from "@/components/pagination";
 import { useQuery } from "@tanstack/react-query";
 import { createLazyFileRoute, Link } from "@tanstack/react-router";
+import { LoaderCircle } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 
 export const Route = createLazyFileRoute("/watch/serie/$serieId/$season/")({
@@ -23,7 +24,7 @@ const fetchEpisodeList = async (
   }>;
 }> => {
   const response = await fetch(
-    `https://watchme-backend-production.up.railway.app/serie/${serieId}/${season}`
+    `${import.meta.env.VITE_NODE_ENV === "development" ? "http://localhost:3000" : "https://watchme-backend-production.up.railway.app"}/serie/${serieId}/${season}`
   );
   return await response.json();
 };
@@ -34,7 +35,12 @@ function RouteComponent() {
     queryKey: [serieId, season],
     queryFn: () => fetchEpisodeList(serieId, season),
   });
-  if (isLoading) return <div>Loading...</div>;
+  if (isLoading)
+    return (
+      <div className="flex items-center justify-center h-full">
+        <LoaderCircle className="animate-spin h-10 w-10" />
+      </div>
+    );
 
   return (
     <div>

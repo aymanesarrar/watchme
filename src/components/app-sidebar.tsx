@@ -13,7 +13,7 @@ import { Link } from "@tanstack/react-router";
 import { useQueryState } from "nuqs";
 async function fetchMovieList(key: string): Promise<ISearch> {
   const response = await fetch(
-    `https://watchme-backend-production.up.railway.app/search/${key}`
+    `${import.meta.env.VITE_NODE_ENV === "development" ? "http://localhost:3000" : "https://watchme-backend-production.up.railway.app"}/search/${key}`
   ).then((data) => data.json());
   return response;
 }
@@ -29,7 +29,6 @@ export function AppSidebar() {
   const handleInputSearch = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
-  console.log("re render");
   return (
     <Sidebar>
       <SidebarHeader>
