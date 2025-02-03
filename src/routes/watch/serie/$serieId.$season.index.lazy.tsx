@@ -1,4 +1,3 @@
-import { CreateReport } from "@/components/create-report";
 import EpisodeCard from "@/components/episode-card";
 import { Pagination } from "@/components/pagination";
 import { useQuery } from "@tanstack/react-query";
@@ -45,7 +44,6 @@ function RouteComponent() {
 
   return (
     <div>
-      <CreateReport />
       <Pagination
         seasonsCount={data?.seasons as number}
         currentSeason={season}

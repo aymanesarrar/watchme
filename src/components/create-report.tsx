@@ -23,6 +23,9 @@ import {
 import { Input } from "./ui/input";
 import { Textarea } from "./ui/textarea";
 import { Button } from "./ui/button";
+import { useMutation } from "@tanstack/react-query";
+import { useToast } from "@/hooks/use-toast";
+import { Bug, LoaderCircle } from "lucide-react";
 
 const formSchema = z.object({
   title: z.string().min(2, {
@@ -33,6 +36,25 @@ const formSchema = z.object({
 });
 
 export function CreateReport() {
+  const { toast } = useToast();
+  const mutation = useMutation({
+    mutationFn: (newReport: z.infer<typeof formSchema>) => {
+      return fetch(
+        `${import.meta.env.VITE_NODE_ENV === "development" ? "http://localhost:3000" : "https://watchme-backend-production.up.railway.app"}/report`,
+        {
+          method: "POST",
+          body: JSON.stringify(newReport),
+          mode: "no-cors",
+        }
+      );
+    },
+    onSuccess: () => {
+      toast({
+        title: "Reported: Catch up",
+        description: "Report has been sent successfully",
+      });
+    },
+  });
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -42,13 +64,13 @@ export function CreateReport() {
     },
   });
   function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
+    mutation.mutate(values);
   }
   return (
     <Dialog>
-      <DialogTrigger>Open</DialogTrigger>
+      <DialogTrigger>
+        <Bug />
+      </DialogTrigger>
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Request / Report</DialogTitle>
@@ -58,7 +80,10 @@ export function CreateReport() {
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="gap-2">
+          <form
+            onSubmit={form.handleSubmit(onSubmit)}
+            className="gap-2 flex flex-col"
+          >
             <FormField
               control={form.control}
               name="type"
@@ -114,7 +139,13 @@ export function CreateReport() {
                 </FormItem>
               )}
             />
-            <Button type="submit">Create report</Button>
+            <Button type="submit">
+              {mutation.isPending ? (
+                <LoaderCircle className="animate-spin" />
+              ) : (
+                "Create report"
+              )}
+            </Button>
           </form>
         </Form>
       </DialogContent>
