@@ -90,14 +90,16 @@ export function CreateReport() {
                 <FormItem>
                   <FormLabel>Type</FormLabel>
                   <FormControl>
-                    <Select {...field}>
+                    <Select
+                      onValueChange={field.onChange}
+                      defaultValue={field.value}
+                    >
                       <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="Select a type" />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectGroup>
                           <SelectItem value="Bug">Bug</SelectItem>
-
                           <SelectItem value="Feature">Feature</SelectItem>
                         </SelectGroup>
                       </SelectContent>
