@@ -1,10 +1,6 @@
 import { fetchEpisodeList } from "@/utils/request";
 import { useQuery } from "@tanstack/react-query";
-import {
-  createLazyFileRoute,
-  useNavigate,
-  useRouter,
-} from "@tanstack/react-router";
+import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { LoaderCircle } from "lucide-react";
 import { motion } from "motion/react";
 import { useCallback, useEffect } from "react";
