@@ -11,6 +11,7 @@ import { ISearch } from "@/types/types";
 import { motion } from "motion/react";
 import { Link } from "@tanstack/react-router";
 import { useQueryState } from "nuqs";
+import { Button } from "./ui/button";
 async function fetchMovieList(key: string): Promise<ISearch> {
   const response = await fetch(
     `${import.meta.env.VITE_NODE_ENV === "development" ? "http://localhost:3000" : "https://watchme-backend-production.up.railway.app"}/search/${key}`
@@ -29,6 +30,9 @@ export function AppSidebar() {
   const handleInputSearch = (e: ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
   };
+  const lastWatched = window.localStorage.getItem("watchme-episode")
+    ? JSON.parse(window.localStorage.getItem("watchme-episode") as string)
+    : null;
   return (
     <Sidebar>
       <SidebarHeader>
@@ -60,7 +64,21 @@ export function AppSidebar() {
           ))}
         </div>
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter>
+        {lastWatched && (
+          <Link
+            to={`/watch/serie/$serieId/$season/$episode`}
+            params={{
+              serieId: lastWatched.serieId,
+              season: lastWatched.season,
+              episode: lastWatched.episode,
+            }}
+            className="w-full"
+          >
+            <Button className="w-full">Continue Watching</Button>
+          </Link>
+        )}
+      </SidebarFooter>
     </Sidebar>
   );
 }

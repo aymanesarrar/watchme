@@ -1,5 +1,6 @@
 import EpisodeCard from "@/components/episode-card";
 import { Pagination } from "@/components/pagination";
+import { fetchEpisodeList } from "@/utils/request";
 import { useQuery } from "@tanstack/react-query";
 import { createLazyFileRoute, Link } from "@tanstack/react-router";
 import { LoaderCircle } from "lucide-react";
@@ -8,26 +9,6 @@ import { AnimatePresence, motion } from "motion/react";
 export const Route = createLazyFileRoute("/watch/serie/$serieId/$season/")({
   component: RouteComponent,
 });
-
-const fetchEpisodeList = async (
-  serieId: string,
-  season: string
-): Promise<{
-  serieId: string;
-  title: string;
-  seasons: number;
-  episodes: Array<{
-    description: string;
-    image: string;
-    releaseDate: string;
-    title: string;
-  }>;
-}> => {
-  const response = await fetch(
-    `${import.meta.env.VITE_NODE_ENV === "development" ? "http://localhost:3000" : "https://watchme-backend-production.up.railway.app"}/serie/${serieId}/${season}`
-  );
-  return await response.json();
-};
 
 function RouteComponent() {
   const { serieId, season } = Route.useParams();
