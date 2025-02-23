@@ -24,7 +24,7 @@ function RouteComponent() {
     );
 
   return (
-    <div>
+    <div className="p-2">
       <Pagination
         seasonsCount={data?.seasons as number}
         currentSeason={season}

@@ -6,7 +6,7 @@ export const Route = createLazyFileRoute("/")({
 
 function RouteComponent() {
   return (
-    <div className="border-solid border-2 border-black h-full">
+    <div className="h-full">
       <h1>shoofoni</h1>
     </div>
   );
