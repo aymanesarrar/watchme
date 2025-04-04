@@ -12,7 +12,7 @@ export const Route = createLazyFileRoute(
 });
 
 function RouteComponent() {
-  const [search, setSearch] = useQueryState("q");
+  const [search] = useQueryState("q");
   const { episode, serieId, season } = Route.useParams();
   window.localStorage.setItem(
     "watchme-episode",

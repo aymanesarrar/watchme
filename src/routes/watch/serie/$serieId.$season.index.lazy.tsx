@@ -12,7 +12,7 @@ export const Route = createLazyFileRoute("/watch/serie/$serieId/$season/")({
 });
 
 function RouteComponent() {
-  const [search, setSearch] = useQueryState("q");
+  const [search] = useQueryState("q");
   const { serieId, season } = Route.useParams();
   const { data, isLoading } = useQuery({
     queryKey: [serieId, season],
