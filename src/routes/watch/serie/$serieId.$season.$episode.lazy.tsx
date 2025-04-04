@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createLazyFileRoute, useNavigate } from "@tanstack/react-router";
 import { LoaderCircle } from "lucide-react";
 import { motion } from "motion/react";
+import { useQueryState } from "nuqs";
 import { useCallback, useEffect } from "react";
 export const Route = createLazyFileRoute(
   "/watch/serie/$serieId/$season/$episode"
@@ -11,6 +12,7 @@ export const Route = createLazyFileRoute(
 });
 
 function RouteComponent() {
+  const [search, setSearch] = useQueryState("q");
   const { episode, serieId, season } = Route.useParams();
   window.localStorage.setItem(
     "watchme-episode",
@@ -29,6 +31,7 @@ function RouteComponent() {
             navigate({
               to: `/watch/serie/$serieId/$season/$episode`,
               params: { serieId, season, episode: (+episode + 1).toString() },
+              search: { search },
             });
           } else {
             if (data?.seasons > +season) {
@@ -39,6 +42,7 @@ function RouteComponent() {
                   season: (+season + 1).toString(),
                   episode: "1",
                 },
+                search: { search },
               });
             }
           }

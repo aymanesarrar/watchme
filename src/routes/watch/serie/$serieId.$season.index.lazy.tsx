@@ -5,12 +5,14 @@ import { useQuery } from "@tanstack/react-query";
 import { createLazyFileRoute, Link } from "@tanstack/react-router";
 import { LoaderCircle } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
+import { useQueryState } from "nuqs";
 
 export const Route = createLazyFileRoute("/watch/serie/$serieId/$season/")({
   component: RouteComponent,
 });
 
 function RouteComponent() {
+  const [search, setSearch] = useQueryState("q");
   const { serieId, season } = Route.useParams();
   const { data, isLoading } = useQuery({
     queryKey: [serieId, season],
@@ -48,6 +50,7 @@ function RouteComponent() {
               <Link
                 to={`/watch/serie/$serieId/$season/$episode`}
                 params={{ serieId, season, episode: (index + 1).toString() }}
+                search={{ q: search }}
               >
                 <EpisodeCard
                   title={episode.title}
