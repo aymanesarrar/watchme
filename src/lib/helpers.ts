@@ -25,3 +25,14 @@ export const fetchEpisodeList = async (
   );
   return await response.json();
 };
+
+export const fetchAllEpisodes = async (
+  serie: string
+): Promise<{
+  episodesCount: Array<number>;
+}> => {
+  const response = await fetch(
+    `${import.meta.env.VITE_NODE_ENV === "development" ? `http://localhost:3000` : "https://watchme-backend-production.up.railway.app"}/serie/${serie}`
+  );
+  return await response.json();
+};

@@ -13,7 +13,7 @@ import { Link, useParams } from "@tanstack/react-router";
 import { useQueryState } from "nuqs";
 import { Button } from "./ui/button";
 import { fetchEpisodeList } from "@/utils/request";
-import { LoaderCircle } from "lucide-react";
+import { fetchAllEpisodes } from "@/lib/helpers";
 async function fetchMovieList(key: string): Promise<ISearch> {
   const response = await fetch(
     `${import.meta.env.VITE_NODE_ENV === "development" ? "http://localhost:3000" : "https://watchme-backend-production.up.railway.app"}/search/${key}`
@@ -29,7 +29,11 @@ export function AppSidebar() {
     queryFn: () => fetchEpisodeList(serieId || "", season || ""),
     enabled: !!serieId && !!season && !!episode,
   });
-
+  const { data: serieEpisodes } = useQuery({
+    queryKey: ["serieId", serieId],
+    queryFn: () => fetchAllEpisodes(serieId || ""),
+    enabled: !!serieId && !!season && !!episode,
+  });
   const { data } = useQuery({
     queryKey: ["movieList", search],
     queryFn: () => fetchMovieList(search),
@@ -75,7 +79,7 @@ export function AppSidebar() {
         </div>
       </SidebarContent>
       <SidebarFooter>
-        {episodes && episode && season && serieId && (
+        {episodes && episode && season && serieId && serieEpisodes && (
           <div className="flex flex-col w-full gap-1 justify-between ">
             <Link
               to={`/watch/serie/$serieId/$season/$episode`}
@@ -103,11 +107,19 @@ export function AppSidebar() {
               to={`/watch/serie/$serieId/$season/$episode`}
               params={{
                 serieId: serieId,
-                season: episode == "1" ? (+season - 1).toString() : season,
+                season:
+                  episode == "1" && season !== "1"
+                    ? (+season - 1).toString()
+                    : season,
                 episode:
-                  episode === "1"
-                    ? (episodes.episodes.length - 1).toString()
-                    : (+episode - 1).toString(),
+                  episode === "1" && season !== "1"
+                    ? serieEpisodes?.episodesCount[+season - 2].toString()
+                    : episode === "1" && season === "1"
+                      ? "1"
+                      : (+episode - 1).toString(),
+              }}
+              search={{
+                q: search,
               }}
               className="w-full"
             >
